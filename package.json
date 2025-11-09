@@ -1,0 +1,21 @@
+{
+  "name": "string-utility-types",
+  "version": "1.0.0",
+  "description": "Utility typescript types for strings",
+  "author": "Ben Lorantfy <ben@lorantfy.com>",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "vitest --typecheck",
+    "build": "tsc",
+    "prepublish": "pnpm run test && pnpm run build"
+  },
+  "keywords": ["typescript", "utility", "types"],
+  "license": "MIT",
+  "packageManager": "pnpm@10.8.1",
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}
