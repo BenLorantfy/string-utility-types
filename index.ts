@@ -44,3 +44,16 @@ type PickByValue<T, ValueType> = Pick<
   T,
   { [Key in keyof T]-?: T[Key] extends ValueType ? Key : never }[keyof T]
 >
+
+export type PathPatternToTemplateLiteral<TPattern extends string> =
+    TPattern extends `/${infer P1}/${infer P2}/${infer P3}/${infer P4}/${infer P5}` ? `/${GetPart<P1>}/${GetPart<P2>}/${GetPart<P3>}/${GetPart<P4>}/${GetPart<P5>}` : 
+    TPattern extends `/${infer P1}/${infer P2}/${infer P3}/${infer P4}` ? `/${GetPart<P1>}/${GetPart<P2>}/${GetPart<P3>}/${GetPart<P4>}` : 
+    TPattern extends `/${infer P1}/${infer P2}/${infer P3}` ? `/${GetPart<P1>}/${GetPart<P2>}/${GetPart<P3>}` : 
+    TPattern extends `/${infer P1}/${infer P2}` ? `/${GetPart<P1>}/${GetPart<P2>}` : 
+    TPattern extends `/${infer P1}` ? `/${GetPart<P1>}` : 
+    never
+
+type MatchesAnyPattern<TPath extends string, TPatterns extends string> = keyof PickByValue<{ [Pattern in TPatterns]: MatchesPathPattern<TPath, Pattern> }, true> extends never ? false : true;
+
+export type NoExtraPathSegments<TPath extends string, TPatterns extends string> = MatchesAnyPattern<TPath, TPatterns> extends true ? TPath : TPath extends `${PathPatternToTemplateLiteral<TPatterns>}/${string}` ? never : TPath;
+

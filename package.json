@@ -1,6 +1,6 @@
 {
   "name": "string-utility-types",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Utility typescript types for strings",
   "author": "Ben Lorantfy <ben@lorantfy.com>",
   "type": "module",
@@ -9,7 +9,7 @@
   "scripts": {
     "test": "vitest --typecheck",
     "build": "tsc",
-    "prepublish": "pnpm run test && pnpm run build"
+    "prepublish": "vitest run --typecheck && pnpm run build"
   },
   "keywords": ["typescript", "utility", "types"],
   "license": "MIT",
