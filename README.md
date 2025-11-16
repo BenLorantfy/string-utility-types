@@ -202,4 +202,24 @@ type Invalid1 = NoExtraPathSegments<'/books/123/author', '/books/:id'> // never
 type Invalid2 = NoExtraPathSegments<'/books/123/extra', '/books/:id'> // never
 ```
 
+---
 
+### `PathPatternParams<TPattern>`
+
+Extracts placeholder parameters (e.g., `:id`, `:userId`) from a path pattern and constructs an object type whose keys are the parameter names and whose values are `string`. Supports multiple parameters.
+
+**Type Parameters:**
+- `TPattern extends string` — The path pattern (e.g., `'/books/:id/authors/:userId'`)
+
+**Behavior:**
+- Parameter placeholders (e.g., `:id`) are extracted as object keys with value type `string`.
+- Patterns without parameters yield an empty object type.
+
+**Example:**
+```ts
+type Params1 = PathPatternParams<'/books/:id'>                  // { id: string }
+type Params2 = PathPatternParams<'/books/:bookId/authors/:id'>  // { bookId: string; id: string }
+type Params3 = PathPatternParams<'/static/path'>                // {}
+```
+
+---

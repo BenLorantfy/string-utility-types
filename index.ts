@@ -1,3 +1,7 @@
+export type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
+
 /**
  * Splits a string into an array of strings, using a delimiter
  * ```ts
@@ -263,3 +267,20 @@ type MatchesAnyPattern<TPath extends string, TPatterns extends string> = keyof P
  * ```
  */
 export type NoExtraPathSegments<TPath extends string, TPatterns extends string> = MatchesAnyPattern<TPath, TPatterns> extends true ? TPath : TPath extends `${PathPatternToTemplateLiteral<TPatterns>}/${string}` ? never : TPath;
+
+/**
+ * Extracts all placeholders from a path pattern and returns an object type with keys as the placeholder names and values as string.
+ * 
+ * @example
+ * ```ts
+ * PathPatternParams<'/applications/:applicationId/users/:userId'> // { applicationId: string, userId: string }
+ * PathPatternParams<'/books/:id'> // { id: string }
+ * PathPatternParams<'/static/path'> // {}
+ * ```
+ */
+export type PathPatternParams<TPattern extends string> = Prettify<
+  TPattern extends `${string}:${infer Param}/${infer Rest}` 
+    ? { [K in Param extends `${infer Name}?` ? Name : Param]: string } & PathPatternParams<`/${Rest}`>
+    : TPattern extends `${string}:${infer Param}`
+      ? { [K in Param extends `${infer Name}?` ? Name : Param]: string }
+      : {}>;

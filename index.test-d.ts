@@ -1,5 +1,5 @@
 import { describe, test, assertType } from 'vitest'
-import type { GetMatchingPathPatternLax, PathPatternToTemplateLiteral, NoExtraPathSegments, MatchesPathPattern, MatchesPathPatternLax, GetMatchingPathPattern } from './index.ts'
+import type { GetMatchingPathPatternLax, PathPatternToTemplateLiteral, NoExtraPathSegments, MatchesPathPattern, MatchesPathPatternLax, GetMatchingPathPattern, PathPatternParams } from './index.ts'
 
 describe('MatchesPathPatternLax', () => {
     test('1 part path pattern', () => {
@@ -322,3 +322,33 @@ describe('integration tests', () => {
     })
 })
 
+describe('PathPatternParams', () => {
+    test('single parameter', () => {
+        assertType<PathPatternParams<'/books/:id'>>({} as { id: string })
+        assertType<PathPatternParams<'/cars/:carId'>>({} as { carId: string })
+        assertType<PathPatternParams<'/users/:userId'> extends { userId: string } ? true : false>(true)
+    })
+
+    test('multiple parameters', () => {
+        assertType<PathPatternParams<'/books/:bookId/authors/:authorId'>>({} as { bookId: string; authorId: string })
+        assertType<PathPatternParams<'/a/:a/b/:b/c/:c'>>({} as { a: string; b: string; c: string })
+    })
+
+    test('no parameters', () => {
+        assertType<PathPatternParams<'/books'>>({} as {})
+        assertType<PathPatternParams<'/static/path'>>({} as {})
+    })
+
+    test('parameters with and without trailing slash', () => {
+        assertType<PathPatternParams<'/foo/:foo'> extends { foo: string } ? true : false>(true)
+        assertType<PathPatternParams<'/foo/:foo/'> extends { foo: string } ? true : false>(true)
+    })
+
+    test('parameters interleaved with no parameters', () => {
+        assertType<PathPatternParams<'/:a/constant/:b'> extends { a: string; b: string } ? true : false>(true)
+    })
+
+    test('empty path', () => {
+        assertType<PathPatternParams<''>>({} as {})
+    })
+})
